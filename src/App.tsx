@@ -11,15 +11,14 @@ export type TaskType = {
     isDone: boolean
 }
 
-export const filterTask = (tasks:TaskType[], filter:string):TaskType[] => {
+export const filterTask = (tasks: TaskType[], filter: string): TaskType[] => {
     if (filter === "active") return tasks.filter(t => !t.isDone);
     if (filter === "completed") return tasks.filter(t => t.isDone);
-
     return tasks
 }
 
 function App() {
-    const [tasks, setTasks] = useState( [
+    const [tasks, setTasks] = useState([
         {id: v1(), title: "HTML&CSS", isDone: true},
         {id: v1(), title: "JS", isDone: true},
         {id: v1(), title: "ReactJS", isDone: false},
@@ -33,13 +32,13 @@ function App() {
         setTasks(tasks.map(el => el.id === newId ? {...el, isDone: newIsDone} : el))
     }
 
-    const addTask = (title:string) => {
-        let task = {id: v1(), title:title, isDone: false}
+    const addTask = (title: string) => {
+        let task = {id: v1(), title: title, isDone: false}
         let newTask = [task, ...tasks]
         setTasks(newTask)
     }
 
-    const removeTask = (id:string) => {
+    const removeTask = (id: string) => {
         setTasks(tasks.filter(t => t.id !== id))
     }
 
@@ -47,11 +46,10 @@ function App() {
     return (
         <div className="App">
             <Todolist
-                title="What to learn"
+                nameTitle="What to learn"
                 tasks={filteredTask}
                 removeTask={removeTask}
                 addTask={addTask}
-                filter={filter}
                 setFilter={setFilter}
                 changeIsDone={changeIsDone}
             />

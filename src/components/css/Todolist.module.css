@@ -2,20 +2,6 @@ body {
     background: #ece9e9;
 }
 
-.buttonRemove {
-    border: none;
-    background: inherit;
-    border-radius: 50%;
-    margin-left: 7px;
-    font-size: 14px;
-}
-
-.buttonRemove:hover {
-    font-weight: bold;
-    color: red;
-    border: 1px solid red;
-}
-
 .li {
     display: flex;
     align-items: center;
@@ -36,9 +22,24 @@ body {
     color: #FFFFFF;
 }
 
+.buttonRemove {
+    border: none;
+    background: inherit;
+    border-radius: 50%;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.buttonRemove:hover {
+    font-weight: bold;
+    color: red;
+    border: 1px solid red;
+}
+
 .button:hover {
     background: #4c9cee;
     color: #2d2d2d;
+    transition: 0.3s;
 }
 
 .input {
