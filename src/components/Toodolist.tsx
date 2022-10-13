@@ -6,15 +6,27 @@ import {FilterValuesType, TaskType} from "../App";
 import s from './css/Todolist.module.css'
 
 export type PropsType = {
+    filter:string
     tasks: TaskType[]
     nameTitle: string
-    removeTask: (id: string) => void
-    addTask: (title: string) => void
-    setFilter: (filter: FilterValuesType) => void
-    changeIsDone: (newId: string, newIsDone: boolean) => void
+    removeTask: (id: string, todoListId:string) => void
+    addTask: (title: string, todoListId:string) => void
+    changeIsDone: (newId: string, newIsDone: boolean, todoListId:string) => void
+    todoListId: string
+    changeTodoListFilter:(filter: FilterValuesType, todoListId: string) => void
+    removeTodoList:(todoListId: string) => void
 }
 
-export const Todolist: React.FC<PropsType> = ({tasks, nameTitle, removeTask, addTask, setFilter, changeIsDone}) => {
+export const Todolist: React.FC<PropsType> = ({
+                                                  tasks,
+                                                  nameTitle,
+                                                  removeTask,
+                                                  addTask,
+                                                  changeIsDone,
+                                                  todoListId,
+                                                  changeTodoListFilter,
+                                                  removeTodoList
+                                              }) => {
     const [title, setTitle] = useState('')
     const [error, setError] = useState<null | string>(null)
     const [activeButton, setActiveButton] = useState('all')
@@ -25,8 +37,8 @@ export const Todolist: React.FC<PropsType> = ({tasks, nameTitle, removeTask, add
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && title !== '') {
-            addTask(title)
+        if (e.key === 'Enter' && title.trim() !== '') {
+            addTask(title.trim(), todoListId)
             setTitle('')
         } else {
             setError('Enter text')
@@ -34,32 +46,31 @@ export const Todolist: React.FC<PropsType> = ({tasks, nameTitle, removeTask, add
     }
 
     const addTaskHandler = () => {
-        if (title !== '') {
-            addTask(title)
+        if (title.trim() !== '') {
+            addTask(title.trim(), todoListId)
             setTitle('')
         } else {
             setError('Enter text')
         }
-
     }
 
     const setAll = () => {
-        setFilter('all')
+        changeTodoListFilter ('all', todoListId)
         setActiveButton('all')
     }
 
     const setComplete = () => {
-        setFilter('completed')
+        changeTodoListFilter ('completed', todoListId)
         setActiveButton('completed')
     }
 
     const setActive = () => {
-        setFilter('active')
+        changeTodoListFilter ('active', todoListId)
         setActiveButton('active')
     }
 
     const changeIsDoneHandler = (tId: string, isDone: boolean) => {
-        changeIsDone(tId, isDone)
+        changeIsDone(tId, isDone, todoListId)
     }
 
     const mappedTasks = tasks.map(t => {
@@ -68,40 +79,38 @@ export const Todolist: React.FC<PropsType> = ({tasks, nameTitle, removeTask, add
                 <MainCheckBox key={t.id} checked={t.isDone}
                               callBack={(isDone: boolean) => changeIsDoneHandler(t.id, isDone)}/>
                 <span>{t.title}</span>
-                <MainButton classname={s.buttonRemove} name={'x'} callback={() => removeTask(t.id)}/>
+                <MainButton classname={s.buttonRemove} name={'x'} callback={() => removeTask(t.id, todoListId)}/>
             </li>
         )
     })
 
     return (
-        <div>
+        <div className={s.todoListBlock}>
+            <h3>{nameTitle}</h3>
             <div>
-                <h3>{nameTitle}</h3>
-                <div>
-                    <MainInput
-                        value={title}
-                        classname={`${s.input} ${error && s.errorInput}`}
-                        callback={onChangeHandler}
-                        onKeyPress={onKeyPressHandler}
-                    />
-                    <MainButton
-                        name={'+'}
-                        classname={s.button}
-                        callback={addTaskHandler}
-                    />
-                </div>
-                {error && <div className={s.errorMessage}>{error}</div>}
-                <ul className={s.taskBlock}>
-                    {mappedTasks}
-                </ul>
-                <div>
-                    <MainButton classname={s.button + ' ' + (activeButton === 'all' ? s.activeFilter : '')} name={'All'}
-                                callback={setAll}/>
-                    <MainButton classname={s.button + ' ' + (activeButton === 'completed' ? s.activeFilter : '')}
-                                name={'Complete'} callback={setComplete}/>
-                    <MainButton classname={s.button + ' ' + (activeButton === 'active' ? s.activeFilter : '')}
-                                name={'Active'} callback={setActive}/>
-                </div>
+                <MainInput
+                    error={error}
+                    value={title}
+                    callback={onChangeHandler}
+                    onKeyPress={onKeyPressHandler}
+                />
+                <MainButton
+                    name={'+'}
+                    classname={s.button}
+                    callback={addTaskHandler}
+                />
+            </div>
+            {error && <div className={s.errorMessage}>{error}</div>}
+            <ul className={s.taskBlock}>
+                {mappedTasks}
+            </ul>
+            <div>
+                <MainButton classname={s.button + ' ' + (activeButton === 'all' ? s.activeFilter : '')} name={'All'}
+                            callback={setAll}/>
+                <MainButton classname={s.button + ' ' + (activeButton === 'completed' ? s.activeFilter : '')}
+                            name={'Complete'} callback={setComplete}/>
+                <MainButton classname={s.button + ' ' + (activeButton === 'active' ? s.activeFilter : '')}
+                            name={'Active'} callback={setActive}/>
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
 body {
-    background: #ece9e9;
+    background: #FFFFFF;
 }
 
 .li {
@@ -79,5 +79,29 @@ body {
 
 .taskBlock {
     margin-top: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    background: rgba(13, 13, 14, 0.1);
+    width: 100%;
+    height: 80px;
+}
+
+.todoListSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.todoListBlock {
+    margin: 20px;
+    background:#ece9e9;
+    padding: 30px;
+    border: 1px solid rgba(29, 33, 38, 0.03);
+    border-radius:5px;
+    box-shadow: 2px 5px 20px rgba(29, 33, 38, 0.03), 2px 1px 2px rgba(29, 33, 38, 0.1);
 }
 
