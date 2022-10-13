@@ -84,8 +84,13 @@ export const Todolist: React.FC<PropsType> = ({
         )
     })
 
+    const removeTodoListHandler = () => {
+        removeTodoList(todoListId)
+    }
+
     return (
         <div className={s.todoListBlock}>
+            <MainButton classname={s.button} name={'Delete'} callback={removeTodoListHandler}/>
             <h3>{nameTitle}</h3>
             <div>
                 <MainInput

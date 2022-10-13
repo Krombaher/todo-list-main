@@ -6,8 +6,8 @@ import {MainButton} from "./universal-components/main-button/MainButton";
 export const Header = () => {
   return (
       <div className={s.header}>
-            <MainInput classname={s.input} value={'...Enter Text'} callback={()=> {}} onKeyPress={() => {}}/>
-            <MainButton classname={s.button} name={'ADD'} callback={()=> {}}/>
+            <MainInput classname={s.input} callback={()=> {}} onKeyPress={() => {}}/>
+            <MainButton classname={s.button} name={'Add Todolist'} callback={()=> {}}/>
       </div>
   )
 }

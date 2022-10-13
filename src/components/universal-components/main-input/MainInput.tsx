@@ -2,7 +2,7 @@ import React, {ChangeEvent, KeyboardEvent} from "react";
 import s from '../../css/Todolist.module.css'
 
 type SuperInputPropsType = {
-    value: string | undefined
+    value?: string | undefined
     callback:(e:ChangeEvent<HTMLInputElement>) => void | undefined
     onKeyPress:(e: KeyboardEvent<HTMLInputElement>) => void
     classname?:any
