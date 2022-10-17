@@ -92,11 +92,11 @@ body {
 
 .todoListSection {
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
 .todoListBlock {
+    width: 240px;
     margin: 20px;
     background:#ece9e9;
     padding: 30px;
