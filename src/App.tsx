@@ -5,6 +5,7 @@ import {v1} from "uuid";
 import {Header} from "./components/Header";
 import s from "./components/css/Todolist.module.css";
 import {ButtonAppBar} from "./components/NavBar";
+import {Paper} from "@mui/material";
 
 //Type
 export type FilterValuesType = "all" | "active" | "completed";
