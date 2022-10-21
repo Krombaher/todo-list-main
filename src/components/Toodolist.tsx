@@ -2,8 +2,12 @@ import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {MainButton} from "./universal-components/main-button/MainButton";
 import {MainCheckBox} from "./universal-components/main-checkbox/MainCheckBox";
 import {MainInput} from "./universal-components/main-input/MainInput";
-import {FilterValuesType, TaskType, TodoListType} from "../App";
+import {FilterValuesType, TaskType} from "../App";
 import s from './css/Todolist.module.css'
+import {MainEditableSpan} from "./universal-components/main-span/MainEditableSpan";
+import {Button, Checkbox, Icon, IconButton, TextField} from "@mui/material";
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import {Delete} from "@mui/icons-material";
 
 export type PropsType = {
     filter: string
@@ -15,29 +19,28 @@ export type PropsType = {
     todoListId: string
     changeTodoListFilter: (filter: FilterValuesType, todoListId: string) => void
     removeTodoList: (todoListId: string) => void
+    changeTodoListTitle: (title: string, todoListId: string) => void
+    changeTaskTitle: (title: string, todoListId: string, id: string) => void
 }
 
-export const Todolist: React.FC<PropsType> = ({
-                                                  tasks,
-                                                  nameTitle,
-                                                  removeTask,
-                                                  addTask,
-                                                  changeIsDone,
-                                                  todoListId,
-                                                  changeTodoListFilter,
-                                                  removeTodoList,
-                                              }) => {
+export const Todolist: React.FC<PropsType> = (
+    {
+        tasks,
+        nameTitle,
+        removeTask,
+        addTask,
+        changeIsDone,
+        todoListId,
+        changeTodoListFilter,
+        removeTodoList,
+        changeTodoListTitle,
+        changeTaskTitle,
+        filter
+    }
+) => {
     const [title, setTitle] = useState('')
     const [error, setError] = useState<null | string>(null)
     const [activeButton, setActiveButton] = useState('all')
-    let [open, setOpen] = useState(true);
-
-    const onclickOpenHandler = () => {
-       if(open) {
-           setOpen(false)
-       } else
-           setOpen(!open)
-    }
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setError(null)
@@ -58,7 +61,7 @@ export const Todolist: React.FC<PropsType> = ({
             addTask(title.trim(), todoListId)
             setTitle('')
         } else {
-            setError('Enter text')
+            setError('Title is required')
         }
     }
 
@@ -77,17 +80,22 @@ export const Todolist: React.FC<PropsType> = ({
         setActiveButton('active')
     }
 
-    const changeIsDoneHandler = (tId: string, isDone: boolean) => {
-        changeIsDone(tId, isDone, todoListId)
-    }
-
     const mappedTasks = tasks.map(t => {
+        const changeTitleTaskHandler = (title: string) => {
+            changeTaskTitle(title, todoListId, t.id)
+        }
+        const changeIsDoneHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            let newIsDoneValue = e.currentTarget.checked
+            changeIsDone(t.id, newIsDoneValue, todoListId)
+        }
+
         return (
             <li className={s.li + ' ' + (t.isDone ? s.isDone : '')}>
-                <MainCheckBox key={t.id} checked={t.isDone}
-                              callBack={(isDone: boolean) => changeIsDoneHandler(t.id, isDone)}/>
-                <span>{t.title}</span>
-                <MainButton classname={s.buttonRemove} name={'x'} callback={() => removeTask(t.id, todoListId)}/>
+                <Checkbox key={t.id} checked={t.isDone} onChange={changeIsDoneHandler}/>
+                <MainEditableSpan title={t.title} onChangeSpanHandler={changeTitleTaskHandler}/>
+                <IconButton onClick={() => removeTask(t.id, todoListId)}>
+                    <Delete/>
+                </IconButton>
             </li>
         )
     })
@@ -96,42 +104,45 @@ export const Todolist: React.FC<PropsType> = ({
         removeTodoList(todoListId)
     }
 
+    const onChangeSpanHandler = (title: string) => {
+        changeTodoListTitle(title, todoListId)
+    }
+
     return (
         <div className={s.todoListBlock}>
-            <MainButton classname={s.button} name={'Delete'} callback={removeTodoListHandler}/>
-            <MainButton classname={s.button} name={open ? 'Closed' : 'Open'} callback={onclickOpenHandler}/>
-            <h3>{nameTitle}</h3>
-
-            {open &&
-                <div>
-                    <div>
-                        <MainInput
-                            error={error}
-                            value={title}
-                            callback={onChangeHandler}
-                            onKeyPress={onKeyPressHandler}
-                        />
-                        <MainButton
-                            name={'+'}
-                            classname={s.button}
-                            callback={addTaskHandler}
-                        />
-                    </div>
-                    {error && <div className={s.errorMessage}>{error}</div>}
-                    <ul className={s.taskBlock}>
-                        {mappedTasks}
-                    </ul>
-                    <div>
-                        <MainButton classname={s.button + ' ' + (activeButton === 'all' ? s.activeFilter : '')}
-                                    name={'All'}
-                                    callback={setAll}/>
-                        <MainButton classname={s.button + ' ' + (activeButton === 'completed' ? s.activeFilter : '')}
-                                    name={'Complete'} callback={setComplete}/>
-                        <MainButton classname={s.button + ' ' + (activeButton === 'active' ? s.activeFilter : '')}
-                                    name={'Active'} callback={setActive}/>
-                    </div>
-                </div>
-            }
+            <div className={s.removeTodoSection}>
+                <MainEditableSpan onChangeSpanHandler={onChangeSpanHandler} title={nameTitle}/>
+                <IconButton onClick={removeTodoListHandler}>
+                    <Delete/>
+                </IconButton>
+            </div>
+            <div className={s.addTaskSection}>
+                <TextField
+                    helperText={error}
+                    error={!!error}
+                    label="Enter text"
+                    variant="outlined"
+                    value={title}
+                    onChange={onChangeHandler}
+                    onKeyPress={onKeyPressHandler}
+                />
+                <ControlPointIcon
+                    style={{fontSize: '30px', marginLeft: '10px'}}
+                    onClick={addTaskHandler}
+                    color={'primary'}
+                />
+            </div>
+            <ul className={s.taskBlock}>
+                {mappedTasks}
+            </ul>
+            <div className={s.buttonBlock}>
+                <Button size="medium" variant={filter === 'all' ? 'contained' : 'outlined'}
+                        onClick={setAll}>All</Button>
+                <Button size="medium" variant={filter === 'completed' ? 'contained' : 'outlined'}
+                        onClick={setComplete}>Complete</Button>
+                <Button size="medium" variant={filter === 'active' ? 'contained' : 'outlined'}
+                        onClick={setActive}>Active</Button>
+            </div>
         </div>
     )
 }

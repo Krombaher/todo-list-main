@@ -1,27 +1,37 @@
-import React, {ChangeEvent, KeyboardEvent} from "react";
+import React, {ChangeEvent, DetailedHTMLProps, InputHTMLAttributes, KeyboardEvent} from "react";
 import s from '../../css/Todolist.module.css'
 
-type SuperInputPropsType = {
-    value?: string | undefined
-    callback:(e:ChangeEvent<HTMLInputElement>) => void | undefined
-    onKeyPress:(e: KeyboardEvent<HTMLInputElement>) => void
-    classname?:any
+type DefaultInputPropsType = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement>
+
+type MainInputPropsType = Omit<DefaultInputPropsType, 'type'> & {
+    callback: (e: ChangeEvent<HTMLInputElement>) => void | undefined
+    onKeyPress: (e: KeyboardEvent<HTMLInputElement>) => void
+    classname?: any
     error?: string | null
 }
 
-export const MainInput = (props:SuperInputPropsType) => {
+export const MainInput: React.FC<MainInputPropsType> = (
+    {
+        callback,
+        onKeyPress,
+        classname,
+        error,
+        ...restProps
+    }
+) => {
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.callback(e)
+        callback(e)
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        props.onKeyPress(e)
+        onKeyPress(e)
     }
 
-    const inputClass = (props.error) ? (s.input + ' ' + s.errorInput) : s.input
+    const inputClass = (error) ? (s.input + ' ' + s.errorInput) : s.input
 
     return (
-        <input value={props.value} className={inputClass} onKeyPress={onKeyPressHandler} onChange={onChangeHandler}/>
+        <input className={inputClass} onKeyPress={onKeyPressHandler} onChange={onChangeHandler} {...restProps}/>
     )
 }

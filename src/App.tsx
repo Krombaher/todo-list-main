@@ -4,7 +4,9 @@ import {Todolist} from "./components/Toodolist";
 import {v1} from "uuid";
 import {Header} from "./components/Header";
 import s from "./components/css/Todolist.module.css";
+import {ButtonAppBar} from "./components/NavBar";
 
+//Type
 export type FilterValuesType = "all" | "active" | "completed";
 export type TaskType = {
     id: string
@@ -21,16 +23,15 @@ export type TasksStateType = {
     [todoListId: string]: TaskType[]
 }
 
+
 function App() {
     // BLL:
     const todoListId_1 = v1()
     const todoListId_2 = v1()
-
     const [todoLists, setTodoLists] = useState<TodoListType[]>([
         {id: todoListId_1, title: "What to learn", filter: "all"},
         {id: todoListId_2, title: "What to buy", filter: "all"}
     ])
-
     const [tasks, setTasks] = useState<TasksStateType>({
         [todoListId_1]: [
             {id: v1(), title: "HTML&CSS", isDone: true},
@@ -39,6 +40,7 @@ function App() {
             {id: v1(), title: "Redux", isDone: false},
             {id: v1(), title: "RTK", isDone: false},
         ],
+
         [todoListId_2]: [
             {id: v1(), title: "Water", isDone: true},
             {id: v1(), title: "Beer", isDone: true},
@@ -49,11 +51,17 @@ function App() {
     })
 
     // Function
-    // const changeStatusTodolist = (todoListId:string) => {
-    //     setTodoLists(todoLists.map(tl => tl.id === todoListId ? {...tl, isOpen: true} :
-    //         tl.isOpen ? {...tl, isOpen:false} : tl
-    //     ))
-    // }
+
+    const changeTodoListTitle = (title: string, todoListId: string) => {
+        setTodoLists(todoLists.map(tl => tl.id === todoListId ? {...tl, title: title} : tl))
+    }
+
+    const changeTaskTitle = (title: string, todoListId: string, id: string) => {
+        setTasks({
+            ...tasks,
+            [todoListId]: tasks[todoListId].map(el => el.id === id ? {...el, title: title} : el)
+        })
+    }
 
     const addTodoList = (title: string) => {
         let id = v1();
@@ -116,12 +124,15 @@ function App() {
                 changeIsDone={changeIsDone}
                 changeTodoListFilter={changeTodoListFilter}
                 removeTodoList={removeTodoList}
+                changeTodoListTitle={changeTodoListTitle}
+                changeTaskTitle={changeTaskTitle}
             />
         )
     })
 
     return (
-        <div className="App">
+        <div className={s.app}>
+            <ButtonAppBar />
             <Header addTodoList={addTodoList}/>
             <div className={s.todoListSection}>
                 {todoListComponents}
