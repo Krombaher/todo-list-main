@@ -1,4 +1,4 @@
-import {TasksStateType, TaskType} from "../../App";
+import {TasksStateType} from "../../App";
 import {v1} from "uuid";
 
 type ActionType = RemoveTaskAT | AddTaskAT | ChangeTaskTitleAT | ChangeTaskStatusAT | AddEmptyTaskAT | RemoveTaskListAT
@@ -49,7 +49,7 @@ const REMOVE_TASK_LIST = 'REMOVE_TASK_LIST'
 export const taskReducer = (state: TasksStateType, action: ActionType): TasksStateType => {
     switch (action.type) {
         case ADD_TASK:
-            let newTask: TaskType = {id: v1(), title: action.title, isDone: false}
+            let newTask = {id: v1(), title: action.title, isDone: false}
             return {...state, [action.todoListId]: [newTask, ...state[action.todoListId]]}
 
         case REMOVE_TASK:

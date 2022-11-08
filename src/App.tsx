@@ -68,8 +68,8 @@ function App() {
 
     //TodoList
 
-    const changeTodoListTitle = (title: string, todoListId: string) => {
-        dispatch(removeTodoListTitleAC(title, todoListId))
+    const changeTodoListTitle = (todoListId: string, title: string) => {
+        dispatch(removeTodoListTitleAC(todoListId, title))
     }
 
     const addTodoList = (title: string) => {
@@ -80,7 +80,7 @@ function App() {
         }
     }
 
-    const changeTodoListFilter = (filter: FilterValuesType, todoListId: string) => {
+    const changeTodoListFilter = (todoListId: string, filter:FilterValuesType) => {
         dispatch(changeTodoListFilterAC(todoListId, filter))
     }
 
@@ -91,16 +91,16 @@ function App() {
 
     //Task
 
-    const changeTaskTitle = (title: string, todoListId: string, taskId: string) => {
-        dispatchTask(changeTaskTitleAC(title, todoListId, taskId))
+    const changeTaskTitle = (todoListId: string, taskId: string, title: string) => {
+        dispatchTask(changeTaskTitleAC(todoListId, taskId, title))
     }
 
-    const addTask = (title: string, todoListId: string) => {
-        dispatchTask(addTaskAC(title, todoListId))
+    const addTask = (todoListId: string, title: string) => {
+        dispatchTask(addTaskAC(todoListId, title))
     }
 
-    const removeTask = (taskId: string, todoListId: string) => {
-        dispatchTask(removeTaskAC(taskId, todoListId))
+    const removeTask = (todoListId: string, taskId: string) => {
+        dispatchTask(removeTaskAC(todoListId, taskId))
     }
 
     const changeIsDone = (todoListId: string, taskId: string, newIsDone: boolean) => {

@@ -10,14 +10,14 @@ export type PropsType = {
     filter: string
     tasks: TaskType[]
     nameTitle: string
-    removeTask: (id: string, todoListId: string) => void
-    addTask: (title: string, todoListId: string) => void
+    removeTask: (todoListId: string, taskId: string) => void
+    addTask: (todoListId: string, title: string) => void
     changeIsDone: (todoListId: string, taskId: string, newIsDone: boolean) => void
     todoListId: string
-    changeTodoListFilter: (filter: FilterValuesType, todoListId: string) => void
+    changeTodoListFilter: (todoListId: string, filter:FilterValuesType) => void
     removeTodoList: (todoListId: string) => void
-    changeTodoListTitle: (title: string, todoListId: string) => void
-    changeTaskTitle: (title: string, todoListId: string, id: string) => void
+    changeTodoListTitle: (todoListId: string, title: string) => void
+    changeTaskTitle: (todoListId: string, taskId: string, title: string) => void
 }
 
 export const Todolist: React.FC<PropsType> = (
@@ -45,7 +45,7 @@ export const Todolist: React.FC<PropsType> = (
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && title.trim() !== '') {
-            addTask(title.trim(), todoListId)
+            addTask(todoListId, title.trim())
             setTitle('')
         } else {
             setError('Enter text')
@@ -54,7 +54,7 @@ export const Todolist: React.FC<PropsType> = (
 
     const addTaskHandler = () => {
         if (title.trim() !== '') {
-            addTask(title.trim(), todoListId)
+            addTask(todoListId, title.trim())
             setTitle('')
         } else {
             setError('Title is required')
@@ -62,20 +62,20 @@ export const Todolist: React.FC<PropsType> = (
     }
 
     const setAll = () => {
-        changeTodoListFilter('all', todoListId)
+        changeTodoListFilter(todoListId, 'all')
     }
 
     const setComplete = () => {
-        changeTodoListFilter('completed', todoListId)
+        changeTodoListFilter(todoListId, 'completed')
     }
 
     const setActive = () => {
-        changeTodoListFilter('active', todoListId)
+        changeTodoListFilter(todoListId, 'active')
     }
 
     const mappedTasks = tasks.map(t => {
         const changeTitleTaskHandler = (title: string) => {
-            changeTaskTitle(title, todoListId, t.id)
+            changeTaskTitle(todoListId, t.id, title)
         }
         const changeIsDoneHandler = (e: ChangeEvent<HTMLInputElement>) => {
             let newIsDoneValue = e.currentTarget.checked
@@ -86,7 +86,7 @@ export const Todolist: React.FC<PropsType> = (
             <li className={s.li + ' ' + (t.isDone ? s.isDone : '')}>
                 <Checkbox key={t.id} checked={t.isDone} onChange={changeIsDoneHandler}/>
                 <MainEditableSpan title={t.title} onChangeSpanHandler={changeTitleTaskHandler}/>
-                <IconButton onClick={() => removeTask(t.id, todoListId)}>
+                <IconButton onClick={() => removeTask(todoListId, t.id)}>
                     <Delete/>
                 </IconButton>
             </li>
@@ -98,7 +98,7 @@ export const Todolist: React.FC<PropsType> = (
     }
 
     const onChangeSpanHandler = (title: string) => {
-        changeTodoListTitle(title, todoListId)
+        changeTodoListTitle(todoListId, title)
     }
 
     return (
