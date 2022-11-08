@@ -1,7 +1,4 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-import {MainButton} from "./universal-components/main-button/MainButton";
-import {MainCheckBox} from "./universal-components/main-checkbox/MainCheckBox";
-import {MainInput} from "./universal-components/main-input/MainInput";
 import {FilterValuesType, TaskType} from "../App";
 import s from './css/Todolist.module.css'
 import {MainEditableSpan} from "./universal-components/main-span/MainEditableSpan";
@@ -40,7 +37,6 @@ export const Todolist: React.FC<PropsType> = (
 ) => {
     const [title, setTitle] = useState('')
     const [error, setError] = useState<null | string>(null)
-    const [activeButton, setActiveButton] = useState('all')
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setError(null)
@@ -67,17 +63,14 @@ export const Todolist: React.FC<PropsType> = (
 
     const setAll = () => {
         changeTodoListFilter('all', todoListId)
-        setActiveButton('all')
     }
 
     const setComplete = () => {
         changeTodoListFilter('completed', todoListId)
-        setActiveButton('completed')
     }
 
     const setActive = () => {
         changeTodoListFilter('active', todoListId)
-        setActiveButton('active')
     }
 
     const mappedTasks = tasks.map(t => {

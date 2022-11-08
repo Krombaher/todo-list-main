@@ -5,7 +5,6 @@ import {v1} from "uuid";
 import {Header} from "./components/Header";
 import s from "./components/css/Todolist.module.css";
 import {ButtonAppBar} from "./components/NavBar";
-import {Paper} from "@mui/material";
 
 //Type
 export type FilterValuesType = "all" | "active" | "completed";
@@ -51,29 +50,40 @@ function App() {
         ]
     })
 
-    // Function
+    //TodoList
 
     const changeTodoListTitle = (title: string, todoListId: string) => {
         setTodoLists(todoLists.map(tl => tl.id === todoListId ? {...tl, title: title} : tl))
     }
+
+    const addTodoList = (title: string) => {
+        let id = v1();
+        const newTodoList: TodoListType = {
+            id,
+            title: title,
+            filter: 'all',
+        }
+
+        setTodoLists([newTodoList, ...todoLists])
+        setTasks({...tasks, [id]: []})
+    }
+
+    const changeTodoListFilter = (filter: FilterValuesType, todoListId: string) => {
+        setTodoLists(todoLists.map(tl => tl.id === todoListId ? {...tl, filter: filter} : tl))
+    }
+
+    const removeTodoList = (todoListId: string) => {
+        setTodoLists(todoLists.filter(tl => tl.id !== todoListId))
+        delete tasks[todoListId]
+    }
+
+    //Task
 
     const changeTaskTitle = (title: string, todoListId: string, id: string) => {
         setTasks({
             ...tasks,
             [todoListId]: tasks[todoListId].map(el => el.id === id ? {...el, title: title} : el)
         })
-    }
-
-    const addTodoList = (title: string) => {
-        let id = v1();
-        const newTodo: TodoListType = {
-            id,
-            title: title,
-            filter: 'all',
-        }
-
-        setTodoLists([newTodo, ...todoLists])
-        setTasks({...tasks, [id]: []})
     }
 
     const addTask = (title: string, todoListId: string) => {
@@ -90,15 +100,6 @@ function App() {
             ...tasks,
             [todoListId]: tasks[todoListId].map(el => el.id === newId ? {...el, isDone: newIsDone} : el)
         })
-    }
-
-    const changeTodoListFilter = (filter: FilterValuesType, todoListId: string) => {
-        setTodoLists(todoLists.map(tl => tl.id === todoListId ? {...tl, filter: filter} : tl))
-    }
-
-    const removeTodoList = (todoListId: string) => {
-        setTodoLists(todoLists.filter(tl => tl.id !== todoListId))
-        delete tasks[todoListId]
     }
 
     const getFilteredTasks = (tasks: Array<TaskType>, filter: FilterValuesType) => {
