@@ -12,7 +12,7 @@ export type PropsType = {
     nameTitle: string
     removeTask: (id: string, todoListId: string) => void
     addTask: (title: string, todoListId: string) => void
-    changeIsDone: (newId: string, newIsDone: boolean, todoListId: string) => void
+    changeIsDone: (todoListId: string, taskId: string, newIsDone: boolean) => void
     todoListId: string
     changeTodoListFilter: (filter: FilterValuesType, todoListId: string) => void
     removeTodoList: (todoListId: string) => void
@@ -79,7 +79,7 @@ export const Todolist: React.FC<PropsType> = (
         }
         const changeIsDoneHandler = (e: ChangeEvent<HTMLInputElement>) => {
             let newIsDoneValue = e.currentTarget.checked
-            changeIsDone(t.id, newIsDoneValue, todoListId)
+            changeIsDone(todoListId, t.id, newIsDoneValue)
         }
 
         return (

@@ -1,6 +1,13 @@
 import {v1} from "uuid";
 import {TasksStateType} from "../../App";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from "./TaskReducer";
+import {
+    addEmptyTaskAC,
+    addTaskAC,
+    changeTaskStatusAC,
+    changeTaskTitleAC,
+    removeTaskAC, removeTaskListAC,
+    taskReducer
+} from "./TaskReducer";
 
 test('add task', () => {
     let todoListId_1 = v1()
@@ -82,4 +89,39 @@ test('change task status ', () => {
 
     expect(endState).not.toBe(startState)
     expect(endState[todoListId_1][0].isDone).toBe(false)
+})
+
+test('add an empty task in todolist ', () => {
+    let todoListId_1 = v1()
+    let taskId_1 = v1()
+
+    const startState: TasksStateType = {
+        [todoListId_1]: []
+    }
+
+    const endState = taskReducer(startState, addEmptyTaskAC(todoListId_1))
+
+    expect(endState).not.toBe(startState)
+    expect(endState[todoListId_1].length).toBe(0)
+})
+
+test('remove task and todolist ', () => {
+    let todoListId_1 = v1()
+    let todoListId_2 = v1()
+    let taskId_1 = v1()
+    let taskId_2 = v1()
+
+    const startState: TasksStateType = {
+        [todoListId_1]: [
+            {id: taskId_1, title: "REACT", isDone: true},
+        ],
+        [todoListId_2]: [
+            {id: taskId_2, title: "HTML&CSS", isDone: true},
+        ]
+    }
+
+    const endState = taskReducer(startState, removeTaskListAC(todoListId_1))
+
+    expect(endState[todoListId_1]).not.toBeDefined()
+    expect(endState[todoListId_2]).toBeDefined()
 })
